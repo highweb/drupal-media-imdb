@@ -1,0 +1,7 @@
+name = Media: IMDB
+description = Provides IMDB support for File Entity and the Media module.
+package = Media
+core = 7.x
+files[] = includes/MediaInternetIMDBHandler.inc
+files[] = includes/MediaIMDBStreamWrapper.inc
+dependencies[] = media_internet

@@ -1,0 +1,59 @@
+<?php
+
+/**
+ * @file
+ *
+ * Media: IMDB provides a stream wrapper for movies available at http://imdb.com.
+ */
+
+/**
+ * Implements hook_media_internet_providers().
+ */
+function media_imdb_media_internet_providers() {
+  return array(
+    'MediaInternetIMDBHandler' => array(
+      'title' => t('IMDB'),
+    ),
+  );
+}
+
+/**
+ * Implements hook_stream_wrappers().
+ */
+function media_imdb_stream_wrappers() {
+  return array(
+    'imdb' => array(
+      'name' => t('IMDB'),
+      'class' => 'MediaIMDBStreamWrapper',
+      'description' => t('Remote movie poster from the IMDB.'),
+      'type' => STREAM_WRAPPERS_READ_VISIBLE,
+    ),
+  );
+}
+
+/**
+ * Implements hook_media_parse().
+ */
+function media_imdb_media_parse($embed_code) {
+  $handler = new MediaInternetIMDBHandler($embed_code);
+  return $handler->parse($embed_code);
+}
+
+/*
+ * Implements hook_file_load().
+ */
+// function media_imdb_file_load($files) {
+//   foreach ($files as &$file) {
+//     if (file_uri_scheme($file->uri) == 'imdb') {
+//       $wrapper = file_stream_wrapper_get_instance_by_uri($file->uri);
+//       $file->uri = $wrapper->getLocalThumbnailPath();
+//     }
+//   }
+// }
+function media_imdb_preprocess_image_formatter(&$vars) {
+  if (file_uri_scheme($vars['item']['uri']) == 'imdb') {
+    $wrapper = file_stream_wrapper_get_instance_by_uri($vars['item']['uri']);
+    $vars['item']['uri'] = $wrapper->getLocalThumbnailPath();
+  }
+}
+
